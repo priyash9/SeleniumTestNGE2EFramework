@@ -1,0 +1,12 @@
+[
+  {
+    "username" : "nick@abc.com",
+    "loginPassword": "swordfish",
+    "product": "Blue Jeans"
+  },
+  {
+    "username" : "nick@abc.com",
+    "loginPassword": "swordfish",
+    "product": "Casual Golf Belt"
+  }
+]
