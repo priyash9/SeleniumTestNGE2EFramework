@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class LoginErrorValidationTest extends WebDriverBaseClass {
     private static final String LOG_IN_ERROR = "Login was unsuccessful. Pleas correct the errors and try again.\n" +
             "The credentials provided are incorrect";
-    private static final String INVALID_USERNAME_ERROR = "Pleas enter a valid email address.";
+    private static final String INVALID_USERNAME_ERROR = "Please enter a valid email address.";
 
     @Test(groups = "error_validation",retryAnalyzer = RetryAnalyzer.class)
     public void validateNonRegisteredUser() {
