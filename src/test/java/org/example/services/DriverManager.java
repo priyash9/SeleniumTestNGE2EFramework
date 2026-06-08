@@ -13,7 +13,6 @@ public class DriverManager {
 
     private static String BROWSER = System.getProperty("browser", "chrome");
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
-    //public final WebDriver driver;
 
     public DriverManager() {
         driver.set(startDriverAndBrowser());
