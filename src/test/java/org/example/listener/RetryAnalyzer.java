@@ -5,11 +5,12 @@ import org.testng.ITestResult;
 
 public class RetryAnalyzer implements IRetryAnalyzer {
     private int count = 0;
+    private static final int maxTry = 1;
 
     @Override
     public boolean retry(ITestResult iTestResult) {
 
-        int maxTry = 1;
+
         if (count < maxTry) {
             count++;
             return true;

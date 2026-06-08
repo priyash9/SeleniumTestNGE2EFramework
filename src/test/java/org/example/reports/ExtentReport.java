@@ -8,20 +8,23 @@ public class ExtentReport {
 
     public static ExtentReports extentReport;
     public static ExtentSparkReporter extentSparkReporter;
-    public static ExtentTest test;
+    private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
-    public static ExtentReports getReportDetails(String testName) {
+    public static ExtentReports getReportDetails() {
         if (extentReport == null) {
-            extentSparkReporter = new ExtentSparkReporter("ExtentReport.html");
+            extentSparkReporter = new ExtentSparkReporter("target/ExtentReport.html");
             extentSparkReporter.config().setReportName("E2E Test Report");
+            extentSparkReporter.config().setDocumentTitle("Selenium Test");
             extentReport = new ExtentReports();
             extentReport.attachReporter(extentSparkReporter);
         }
         return extentReport;
     }
 
-    public static ExtentTest getExtentReport(String testName) {
-        return getReportDetails(testName).createTest(testName);
+    public static ExtentTest createExtentReport(String testName) {
+        ExtentTest test = getReportDetails().createTest(testName);
+        extentTest.set(test);
+        return test;
     }
 
     public static void flushExtentReport() {

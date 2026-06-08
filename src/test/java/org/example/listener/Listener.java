@@ -13,42 +13,40 @@ import java.io.IOException;
 
 public class Listener implements ITestListener {
 
-    ExtentTest test;
+
 
     ThreadLocal<ExtentTest> testInstance = new ThreadLocal<>();
     @Override
     public void onTestStart(ITestResult result) {
-        test = ExtentReport.getExtentReport(result.getMethod().getMethodName());
+        ExtentTest test = ExtentReport.createExtentReport(result.getMethod().getMethodName());
         testInstance.set(test);
         System.out.println("Test Started : " + result.getMethod().getMethodName());
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
+        testInstance.get().pass("********* Test Passed *********** ");
         System.out.println("Test Passed : " + result.getMethod().getMethodName());
 
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
+        ExtentTest test = testInstance.get();
+        test.fail(result.getThrowable());
         WebDriver driver = null;
-        test = testInstance.get();
 
         if (result.getInstance() instanceof WebDriverBaseClass) {
             driver = ((WebDriverBaseClass) result.getInstance()).returnDriver();
         }
 
-        // Log the failure to Extent Reports
-        if (test != null) {
-            test.fail(result.getThrowable());
-        }
         if (driver != null) {
             try {
                 String filePath = ScreenshotHandler.takeScreenShot(
                         driver,
                         result.getMethod().getMethodName()
                 );
-                test.addScreenCaptureFromBase64String(filePath);
+                test.addScreenCaptureFromPath(filePath);
             } catch (IOException e) {
                 System.err.println("Failed to capture screenshot: " + e.getMessage());
             }
@@ -56,6 +54,28 @@ public class Listener implements ITestListener {
             System.err.println("Could not capture screenshot because WebDriver was null.");
         }
 
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        ExtentTest test = testInstance.get();
+
+        if (result.getAttribute("retry") != null) {
+            test.info("Retrying test...");
+        } else {
+            test.skip(result.getThrowable());
+        }
+    }
+
+
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+        ITestListener.super.onTestFailedButWithinSuccessPercentage(result);
+    }
+
+    @Override
+    public void onTestFailedWithTimeout(ITestResult result) {
+        ITestListener.super.onTestFailedWithTimeout(result);
     }
 
     @Override
